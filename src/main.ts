@@ -7,11 +7,15 @@ window.addEventListener("DOMContentLoaded", () => {
     "calculator-input"
   ) as HTMLInputElement | null;
   const $result = document.getElementById("calculator-result");
+
   let resultText: string;
 
   getHistory().then(() => renderHistory());
 
-  $input?.addEventListener("input", (e) => {
+  $input?.addEventListener("input", inputEvent);
+  window.addEventListener("keydown", keydownEvent);
+
+  function inputEvent(e: Event) {
     const target = e?.target as HTMLInputElement;
     const value = target.value;
 
@@ -41,9 +45,9 @@ window.addEventListener("DOMContentLoaded", () => {
         : `${value} = ${computedValue}`;
 
     $result!.textContent = resultText;
-  });
+  }
 
-  window.addEventListener("keydown", (e) => {
+  function keydownEvent(e: KeyboardEvent) {
     if (e.key === "Enter") {
       if (resultText) {
         HISTORY.push(resultText);
@@ -64,7 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       $input!.dispatchEvent(new Event("input"));
     }
-  });
+  }
 });
 
 function renderHistory() {
