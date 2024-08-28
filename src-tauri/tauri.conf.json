@@ -22,7 +22,9 @@
           "exists": true,
           "removeFile": true,
           "writeFile": true,
-          "scope": ["$APP/**"]
+          "readFile": true,
+          "readDir": true,
+          "scope": ["**"]
         }
     },
     "windows": [

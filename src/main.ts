@@ -1,27 +1,5 @@
-/*
 import { invoke } from "@tauri-apps/api/tauri";
 
-let greetInputEl: HTMLInputElement | null;
-let greetMsgEl: HTMLElement | null;
-
-async function greet() {
-  if (greetMsgEl && greetInputEl) {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke("greet", {
-      name: greetInputEl.value,
-    });
-  }
-}
-  */
-
-import {
-  BaseDirectory,
-  exists,
-  readTextFile,
-  writeTextFile,
-} from "@tauri-apps/api/fs";
-
-const HISTORYPATH = "history.txt";
 const HISTORY: string[] = [];
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -31,7 +9,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const $result = document.getElementById("calculator-result");
   let resultText: string;
 
-  getHistory();
+  getHistory().then(() => renderHistory());
 
   $input?.addEventListener("input", (e) => {
     const target = e?.target as HTMLInputElement;
@@ -103,34 +81,17 @@ function renderHistory() {
 }
 
 async function getHistory() {
-  try {
-    const existsHistory = await exists(HISTORYPATH);
+  const content: string = await invoke("get_history_content");
 
-    if (HISTORY.length !== 0) {
-      HISTORY.length = 0;
-    }
-    alert(existsHistory);
-    if (existsHistory) {
-      const historyContent = await readTextFile(HISTORYPATH, {
-        dir: BaseDirectory.App,
-      });
-      const content = historyContent.split("\n");
-      content.map((c) => HISTORY.push(c));
-    } else {
-      await writeTextFile(HISTORYPATH, "", { dir: BaseDirectory.App });
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  if (!content) return;
+
+  HISTORY.length = 0;
+
+  const c = content.split("\n");
+
+  c.map((content) => HISTORY.push(content));
 }
 
 async function writeHistoryFile(content: string) {
-  try {
-    await writeTextFile(HISTORYPATH, `${content}\n`, {
-      dir: BaseDirectory.App,
-      append: true,
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  await invoke("write_history", { content: `${content}\n` });
 }
