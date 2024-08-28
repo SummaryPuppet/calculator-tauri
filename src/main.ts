@@ -7,6 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
     "calculator-input"
   ) as HTMLInputElement | null;
   const $result = document.getElementById("calculator-result");
+  const $cleanHistoryBtn = document.getElementById("clean-history");
 
   let resultText: string;
 
@@ -14,6 +15,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
   $input?.addEventListener("input", inputEvent);
   window.addEventListener("keydown", keydownEvent);
+  $cleanHistoryBtn?.addEventListener("click", async (_) => {
+    await invoke("clean_history");
+    HISTORY.length = 0;
+    renderHistory();
+  });
 
   function inputEvent(e: Event) {
     const target = e?.target as HTMLInputElement;

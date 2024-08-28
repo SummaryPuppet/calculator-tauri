@@ -37,3 +37,13 @@ input:focus {
 ul {
   list-style-type: none;
 }
+
+button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 20px;
+  border-radius: 13px;
+  padding: 5px 8px;
+  background-color: none;
+}

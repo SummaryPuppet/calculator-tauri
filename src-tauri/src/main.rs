@@ -50,12 +50,7 @@ fn clean_history(handle: AppHandle) {
         .resolve_resource("history.txt")
         .expect("failed to resolver resource");
 
-    let mut file = std::fs::OpenOptions::new()
-        .write(true)
-        .open(&resource_path)
-        .expect("Error in open file");
-
-    let _ = std::fs::File::write(&mut file, "".as_bytes());
+    let _ = std::fs::File::create(&resource_path).unwrap();
 }
 
 fn main() {
