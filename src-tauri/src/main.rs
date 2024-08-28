@@ -43,9 +43,28 @@ fn write_history(handle: AppHandle, content: &str) {
     }
 }
 
+#[tauri::command]
+fn clean_history(handle: AppHandle) {
+    let resource_path = handle
+        .path_resolver()
+        .resolve_resource("history.txt")
+        .expect("failed to resolver resource");
+
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .open(&resource_path)
+        .expect("Error in open file");
+
+    let _ = std::fs::File::write(&mut file, "".as_bytes());
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_history_content, write_history])
+        .invoke_handler(tauri::generate_handler![
+            get_history_content,
+            write_history,
+            clean_history
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
